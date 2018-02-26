@@ -1,17 +1,51 @@
-#include <dht.h>
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
 
-dht DHT;
+#define DHTPIN            2   
+#define DHTTYPE           DHT11 
 
-#define DHT11_PIN 2
-void setup(){
+DHT dht(DHTPIN, DHTTYPE);
 
-	Serial.begin(9600);
+void setup() {
+  Serial.begin(9600);
+  
+  dht.begin();
 }
-void loop(){
-  int chk = DHT.read11(DHT11_PIN);
-  Serial.print("Temperature = ");
-  Serial.println(DHT.temperature);
-  Serial.print("Humidity = ");
-  Serial.println(DHT.humidity);
+
+void loop() {
+  
   delay(1000);
+
+  
+  float h = dht.readHumidity();
+  
+  float t = dht.readTemperature();
+  // Read temperature as Fahrenheit 
+  float f = dht.readTemperature(true);
+
+ 
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  
+  float hif = dht.computeHeatIndex(f, h);
+  // Compute heat index in Celsius (isFahreheit = false)
+  float hic = dht.computeHeatIndex(t, h, false);
+
+  Serial.print("Humidity: ");
+  Serial.print(h);
+  Serial.print(" %");
+  Serial.print("Temperature: ");
+  Serial.print(t);
+  Serial.println(" *C ");
+  //Serial.print(f);
+  //Serial.print(" *F\t");
+  //Serial.print("Heat index: ");
+  //Serial.print(hic);
+  //Serial.print(" *C ");
+  //Serial.print(hif);
+  //Serial.println(" *F");
 }
