@@ -4,7 +4,8 @@
 
 #define DHTPIN            2   
 #define DHTTYPE           DHT11 
-
+#define pinMode(D8, OUTPUT);
+digitalWrite(D8, LOW);
 DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
@@ -30,6 +31,9 @@ void loop() {
     return;
   }
 
+  if (h >= 55 || t >=32){
+  digitalWrite(D8, HIGH);
+  }
   
   float hif = dht.computeHeatIndex(f, h);
   // Compute heat index in Celsius (isFahreheit = false)
