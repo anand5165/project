@@ -1,4 +1,4 @@
-#i#include <Adafruit_Sensor.h>
+#include <Adafruit_Sensor.h>
 
 #include <Wire.h>
 
@@ -13,9 +13,9 @@ void setup(){
 }
  
 void loop() {
-  float lux = lightMeter.readLightLevel();
+  float l = lightMeter.readLightLevel();
   Serial.print("Light: ");
-  Serial.print(lux);
+  Serial.print(l);
   Serial.println(" lx");
   delay(1000);
 }
