@@ -5,12 +5,16 @@
 
 #define DHTPIN            2   
 #define DHTTYPE           DHT11 
+#define pinMode(D8, OUTPUT);
+#define pinMode(D9, OUTPUT);
 
 DHT dht(DHTPIN, DHTTYPE);
 BH1750 lightMeter;
 
 void setup() {
   Serial.begin(9600);
+  digitalWrite(D8, LOW);
+  digitalWrite(D9, LOW);
   lightMeter.begin();
   Wire.begin(D2,D1);
   dht.begin();
@@ -38,6 +42,13 @@ void loop() {
     return;
   }
 
+   if (h >= 55 || t >=32){
+  digitalWrite(D8, HIGH);
+  }
+
+   if (h <= 25){
+  digitalWrite(D9, HIGH);
+  }
   
   float hif = dht.computeHeatIndex(f, h);
   // Compute heat index in Celsius (isFahreheit = false)
