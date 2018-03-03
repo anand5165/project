@@ -46,7 +46,7 @@ void loop() {
   digitalWrite(D8, HIGH);
   }
 
-   if (h <= 25){
+   if (l <= 25){
   digitalWrite(D9, HIGH);
   }
   
