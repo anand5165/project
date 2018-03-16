@@ -1,24 +1,36 @@
 import cv2
-from darkflow.net.build import TFNet
-import numpy as np
 import time
+import numpy as np
+import matplotlib.pyplot as plt
+from darkflow.net.build import TFNet
 
+#defining model options
 options = {
     'model': 'cfg/yolo.cfg',
-    'load': 'bin/yolo.weights',
+    'load': 'bin/yolo.weights', # trained weights
     'threshold': 0.2,
     'gpu': 1.0
 }
 
 tfnet = TFNet(options)
 
+# streaming video from cam
 capture = cv2.VideoCapture(0)
+
+# setting video quality
 capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
+# Define the codec and create VideoWriter object
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('output.avi',fourcc, 20.0, (640,480))
+
+currentFrame = 0
 while True:
     stime = time.time()
+    # capture frame
     ret, frame = capture.read()
+    #predict using yolo
     results = tfnet.return_predict(frame)
     
     if ret:
@@ -32,9 +44,15 @@ while True:
       # put rectangle around image
        frame = cv2.rectangle(frame, tl, br, (0, 255, 0), 5)
        frame = cv2.putText(frame, text, tl, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2)
+       
+      # Saves image of the current frame in jpg file
+      name = './data/frame' + str(currentFrame) + '.jpg'
+      print ('Creating...' + name)
+      cv2.imwrite(name, frame)
       
-       cv2.imshow('frame', frame)
-       print('FPS {:.1f}'.format(1 / (time.time() - stime)))
+      cv2.imshow(name, frame)
+      print('FPS {:.1f}'.format(1 / (time.time() - stime)))
+      currentFrame += 1
       
     if cv2.waitKey(1) & 0xFF == ord('q'):
        break
