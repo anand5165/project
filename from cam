@@ -39,6 +39,9 @@ while True:
        label = result['label']
        confidence = result['confidence']
       
+      # if label is person #####################
+      
+      
        text = '{}: {:.0f}%'.format(label, confidence * 100)
       
        # put rectangle around image
