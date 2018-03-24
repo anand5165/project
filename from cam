@@ -14,6 +14,9 @@ options = {
 
 tfnet = TFNet(options)
 
+# bounding box colour
+colors = [tuple(255 * np.random.rand(3)) for _ in range(10)]
+
 # streaming video from cam
 capture = cv2.VideoCapture(0)
 
@@ -33,26 +36,29 @@ while True:
     #predict using yolo
     results = tfnet.return_predict(frame)
     
-    if ret:
-       tl = (result['topleft']['x'], result['topleft']['y'])
-       br = (result['bottomright']['x'], result['bottomright']['y'])
-       label = result['label']
-       confidence = result['confidence']
-      
-      # if label is person #####################
-      
-      
-       text = '{}: {:.0f}%'.format(label, confidence * 100)
-      
-       # put rectangle around image
-       frame = cv2.rectangle(frame, tl, br, (0, 255, 0), 5)
-       frame = cv2.putText(frame, text, tl, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2)
+    if ret:  
+      count = 0
+      for color, result in zip(colors, results):
+          if (label = "person" or "Person" or "PERSON") 
+            count +=1
+            tl = (result['topleft']['x'], result['topleft']['y'])
+            br = (result['bottomright']['x'], result['bottomright']['y'])
+            label = result['label']
+            confidence = result['confidence']
+            
+            text = '{}: {:.0f}%'.format(label, confidence * 100)
+             # put rectangle around image
+            frame = cv2.rectangle(frame, tl, br, color, 5)
+            frame = cv2.putText(frame, text, tl, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2)
+        cv2.imshow('frame', frame)
+        print('FPS {:.1f}'.format(1 / (time.time() - stime)))
+       
        
        # save as video 
        output.write(frame)
        
        # Saves image of the current frame in jpg file
-       name = './data/frame' + str(currentFrame) + '.jpg'
+       name = './data/frame' + str(currentFrame) + str(count) + '.jpg'
        print ('Creating...' + name)
        cv2.imwrite(name, frame)
       
