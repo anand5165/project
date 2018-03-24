@@ -5,10 +5,11 @@
 #define DHTPIN            2   
 #define DHTTYPE           DHT11 
 #define pinMode(D8, OUTPUT);
-digitalWrite(D8, LOW);
+
 DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
+  digitalWrite(D8, LOW);
   Serial.begin(9600);
   
   dht.begin();
