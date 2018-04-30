@@ -37,6 +37,7 @@ void loop() {
     Serial.println("Failed to read from DHT sensor");
     return;
   }
+  
   if (isnan(l)){
     Serial.println("Failed to read from Bh1750 sensor");
     return;
