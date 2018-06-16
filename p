@@ -1,8 +1,14 @@
-#include <BH1750.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include <BH1750.h>
+#include <Wire.h>
+#include <Firebase.h>
 #include <FirebaseArduino.h>
+#include <FirebaseCloudMessaging.h>
+#include <FirebaseError.h>
+#include <FirebaseHttpClient.h>
+#include <FirebaseObject.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiAP.h>
 #include <ESP8266WiFiGeneric.h>
@@ -16,45 +22,41 @@
 #include <WiFiServerSecure.h>
 #include <WiFiUdp.h>
 
-
-
+BH1750 lightMeter;
 
 #define FIREBASE_HOST "https://proj-1-df3fa.firebaseio.com/"
-#define WIFI_SSID "spider" 
-#define WIFI_PASSWORD "88888888" 
+#define WIFI_SSID "spider" // Change the name of your WIFI
+#define WIFI_PASSWORD "88888888" // Change the password of your WIFI
 
-
-
-
-#define DHTPIN            2   
+#define DHTPIN            14  //dpin5
 #define DHTTYPE           DHT11 
 #define pinMode(D8, OUTPUT);
 #define pinMode(D9, OUTPUT);
-
 DHT dht(DHTPIN, DHTTYPE);
-BH1750 lightMeter;
-
-void setup() {
 
 
-  WiFi.begin (WIFI_SSID, WIFI_PASSWORD);
-   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-    Serial.println ("");
-  Serial.println ("WiFi Connected!");
-  Firebase.begin(FIREBASE_HOST);
+void setup(){
+   
   Serial.begin(9600);
   digitalWrite(D8, LOW);
   digitalWrite(D9, LOW);
   lightMeter.begin();
-  Wire.begin(D2,D1);
-  dht.begin();
+    Wire.begin(D2,D1);
+
+      WiFi.begin (WIFI_SSID, WIFI_PASSWORD);
+   while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+   dht.begin();
+  Serial.println ("");
+  Serial.println ("WiFi Connected!");
+  Firebase.begin(FIREBASE_HOST);
 }
 
 void loop() {
   
-  delay(1000);
+  
 
   
   float h = dht.readHumidity();
@@ -96,8 +98,9 @@ void loop() {
   Serial.print("Light: ");
   Serial.print(l);
   Serial.println(" lx");
- Firebase.setFloat ("Temp",t);
+
+  Firebase.setFloat ("Temp",t);
   Firebase.setFloat ("Humidity",h);
-  Firebase.setFloat ("light",l);
-  
+  Firebase.setFloat ("light intensity",l);
+ delay(1000);
 }
